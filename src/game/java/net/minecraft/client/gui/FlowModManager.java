@@ -12,7 +12,6 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.MathHelper;
 
 public class FlowModManager {
@@ -99,7 +98,6 @@ public class FlowModManager {
 	private static int cpsRightDisplay = 0;
 	private static boolean leftDownPrev = false;
 	private static boolean rightDownPrev = false;
-	private static long lastAutoTip = 0L;
 	private static final SimpleDateFormat CLOCK_FMT = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
 	public static void initializeIfNeeded(GameSettings settings) {
@@ -183,30 +181,6 @@ public class FlowModManager {
 			KeyBinding.setKeyBindState(gs.keyBindSprint.getKeyCode(), canSprint);
 		}
 
-		if (isEnabled(Mod.AUTO_JUMP_ASSIST) && mc.player != null && mc.player.onGround && gs.keyBindForward.isKeyDown()
-				&& mc.player.collidedHorizontally) {
-			mc.player.jump();
-		}
-
-		if (isEnabled(Mod.ENTITY_CULLING)) {
-			gs.renderDistanceChunks = Math.min(gs.renderDistanceChunks, 6);
-		}
-
-		if (isEnabled(Mod.WEATHER_OFF) && mc.world != null) {
-			mc.world.setRainStrength(0.0F);
-			mc.world.setThunderStrength(0.0F);
-		} else if (isEnabled(Mod.RAIN_OPACITY_LOW) && mc.world != null) {
-			mc.world.setRainStrength(Math.min(mc.world.getRainStrength(1.0F), 0.2F));
-		}
-
-		if (isEnabled(Mod.AUTO_TIP) && mc.player != null && mc.getConnection() != null) {
-			long now = Minecraft.getSystemTime();
-			if (now - lastAutoTip > 120000L) {
-				lastAutoTip = now;
-				mc.player.sendChatMessage("/tip");
-			}
-		}
-
 		updateCpsCounter();
 	}
 
@@ -277,27 +251,6 @@ public class FlowModManager {
 				}
 			}
 		}
-		if (isEnabled(Mod.POTION_HUD) && mc.player != null) {
-			mc.fontRendererObj.drawStringWithShadow("Potions: " + mc.player.getActivePotionEffects().size(), leftX, y, 0xFF9FC2E7);
-			y += 10;
-		}
-		if (isEnabled(Mod.ITEM_COUNTER_HUD) && mc.player != null) {
-			ItemStack held = mc.player.inventory.getCurrentItem();
-			if (!held.func_190926_b()) {
-				mc.fontRendererObj.drawStringWithShadow("Held: " + held.getDisplayName() + " x" + held.func_190916_E(), leftX, y,
-						0xFF87A7C8);
-				y += 10;
-			}
-		}
-		if (isEnabled(Mod.REACH_DISPLAY) && mc.player != null) {
-			double reach = 0.0D;
-			RayTraceResult mop = mc.objectMouseOver;
-			if (mop != null && mop.hitVec != null) {
-				reach = mop.hitVec.distanceTo(mc.player.getPositionEyes(1.0F));
-			}
-			mc.fontRendererObj.drawStringWithShadow(String.format(Locale.US, "Reach: %.2f", reach), leftX, y, 0xFF9FC2E7);
-			y += 10;
-		}
 		if (isEnabled(Mod.KEYSTROKES_HUD)) {
 			renderKeyBox(gui, sr.getScaledWidth() - 72, sr.getScaledHeight() - 92, "W",
 					mc.gameSettings.keyBindForward.isKeyDown());
@@ -322,73 +275,6 @@ public class FlowModManager {
 				}
 			}
 		}
-
-		int centerX = sr.getScaledWidth() / 2;
-		int centerY = sr.getScaledHeight() / 2;
-		if (isEnabled(Mod.CROSSHAIR_DOT)) {
-			Gui.drawRect(centerX - 1, centerY - 1, centerX + 1, centerY + 1, 0xFFFFFFFF);
-		}
-		if (isEnabled(Mod.DYNAMIC_CROSSHAIR) && mc.player != null) {
-			int spread = 3 + (int) (mc.player.motionX * mc.player.motionX * 120.0D + mc.player.motionZ * mc.player.motionZ * 120.0D);
-			Gui.drawRect(centerX - spread, centerY, centerX - spread + 4, centerY + 1, 0xFFFFFFFF);
-			Gui.drawRect(centerX + spread - 4, centerY, centerX + spread, centerY + 1, 0xFFFFFFFF);
-		}
-		if (isEnabled(Mod.DAMAGE_TINT) && mc.player != null && mc.player.hurtTime > 0) {
-			int a = Math.min(120, mc.player.hurtTime * 12) << 24;
-			Gui.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), a | 0xAA0000);
-		}
-		if (isEnabled(Mod.HIT_COLOR) && mc.gameSettings.keyBindAttack.isKeyDown()) {
-			Gui.drawRect(centerX - 8, centerY - 8, centerX + 8, centerY + 8, 0x30A0E8FF);
-		}
-		if (isEnabled(Mod.MOTION_BLUR)) {
-			Gui.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0x08000000);
-		}
-		if (isEnabled(Mod.BLOCK_OUTLINE_BOLD)) {
-			Gui.drawRect(centerX - 12, centerY - 12, centerX + 12, centerY - 11, 0x50FFFFFF);
-			Gui.drawRect(centerX - 12, centerY + 11, centerX + 12, centerY + 12, 0x50FFFFFF);
-			Gui.drawRect(centerX - 12, centerY - 12, centerX - 11, centerY + 12, 0x50FFFFFF);
-			Gui.drawRect(centerX + 11, centerY - 12, centerX + 12, centerY + 12, 0x50FFFFFF);
-		}
-		if (isEnabled(Mod.BRIDGE_GUIDE)) {
-			Gui.drawRect(centerX - 1, centerY + 12, centerX + 1, sr.getScaledHeight(), 0x306DBAFF);
-		}
-		if (isEnabled(Mod.SKY_DARKEN)) {
-			Gui.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0x14000000);
-		}
-		if (isEnabled(Mod.SATURATION_BOOST)) {
-			Gui.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0x08FFD86E);
-		}
-		if (isEnabled(Mod.MENU_BLUR)) {
-			Gui.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0x10040E1F);
-		}
-
-		int auxY = sr.getScaledHeight() - 52;
-		auxY = renderAuxTag(mc, sr, Mod.BOSSBAR_COMPACT, "Bossbar Compact", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.CHAT_TIMESTAMPS, "Chat Timestamps", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.CHAT_FILTER, "Chat Filter", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.TAB_COMPACT, "Tab Compact", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.INVENTORY_TWEAKS, "Inventory Tweaks", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.QUICK_PLAY, "Quick Play", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.AUTO_TIP, "Auto Tip", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.AUTO_JUMP_ASSIST, "Auto Jump", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.ENTITY_CULLING, "Entity Culling", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.WEATHER_OFF, "Weather Off", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.RAIN_OPACITY_LOW, "Low Rain", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.NO_FOG, "No Fog", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.ARROW_TRAIL, "Arrow Trail", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.KILL_SOUND, "Kill Sound", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.CLUTCH_ALERTS, "Clutch Alerts", auxY);
-		auxY = renderAuxTag(mc, sr, Mod.FAST_MATH, "Fast Math", auxY);
-		renderAuxTag(mc, sr, Mod.MINIMAL_ANIMATIONS, "Minimal Animations", auxY);
-	}
-
-	private static int renderAuxTag(Minecraft mc, ScaledResolution sr, Mod mod, String text, int y) {
-		if (!isEnabled(mod)) {
-			return y;
-		}
-		int w = mc.fontRendererObj.getStringWidth(text);
-		mc.fontRendererObj.drawStringWithShadow(text, sr.getScaledWidth() - w - 6, y, 0xFF8CB4DA);
-		return y - 10;
 	}
 
 	private static void renderKeyBox(GuiIngame gui, int x, int y, String txt, boolean pressed) {
