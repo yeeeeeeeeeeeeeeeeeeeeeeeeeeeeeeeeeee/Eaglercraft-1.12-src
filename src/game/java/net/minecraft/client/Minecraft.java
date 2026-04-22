@@ -53,6 +53,7 @@ import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiNewChat;
+import net.minecraft.client.gui.GuiScreenFlowClient;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSleepMP;
 import net.minecraft.client.gui.GuiWinGame;
@@ -1438,6 +1439,9 @@ public class Minecraft implements IThreadListener {
 				if (this.currentScreen == null) {
 					if (i == 1 /* || (i > -1 && i == this.gameSettings.keyBindClose.getKeyCode()) */) {
 						this.displayInGameMenu();
+					}
+					if (i == 54) {
+						this.displayGuiScreen(new GuiScreenFlowClient((GuiScreen) null));
 					}
 
 					flag1 = Keyboard.isKeyDown(61) && this.processKeyF3(i);

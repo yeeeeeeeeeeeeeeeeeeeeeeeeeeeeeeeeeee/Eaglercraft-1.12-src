@@ -86,7 +86,9 @@ public class GuiMainMenu extends GuiScreen {
 
 	private int field_193978_M;
 	private int field_193979_N;
-	private static final int FLOW_PANEL_WIDTH = 238;
+	private static final int FLOW_PANEL_WIDTH = 300;
+	private static final int FLOW_BUTTON_WIDTH = 220;
+	private static final int FLOW_BUTTON_STEP = 28;
 	private static final int FLOW_ACCENT = 0xFF5DB8FF;
 
 	public GuiMainMenu() {
@@ -159,10 +161,6 @@ public class GuiMainMenu extends GuiScreen {
 			return;
 		}
 
-		viewportTexture = new MainMenuSkyboxTexture(256, 256);
-		this.backgroundTexture = this.mc.getTextureManager().getDynamicTextureLocation("background", this.viewportTexture);
-		viewportTexture2 = new MainMenuSkyboxTexture(256, 256);
-		backgroundTexture2 = this.mc.getTextureManager().getDynamicTextureLocation("background", viewportTexture2);
 		this.field_193978_M = this.fontRendererObj.getStringWidth("Resources copyright Mojang AB");
 		this.field_193979_N = this.width - this.field_193978_M - 2;
 		Calendar calendar = Calendar.getInstance();
@@ -176,18 +174,18 @@ public class GuiMainMenu extends GuiScreen {
 			this.splashText = I18n.format("eaglercraft.splashes.halloween");
 		}
 
-		int i = 24;
-		int j = this.height / 4 + 64;
+		int j = this.height / 4 + 66;
 
 		if (this.mc.isDemo()) {
-			this.addDemoButtons(j, 24);
+			this.addDemoButtons(j, FLOW_BUTTON_STEP);
 		} else {
-			this.addSingleplayerMultiplayerButtons(j, 24);
+			this.addSingleplayerMultiplayerButtons(j, FLOW_BUTTON_STEP);
 		}
 
-		this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, I18n.format("menu.options")));
-		this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20, I18n.format("Edit Profile")));
-		this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 124, j + 72 + 12));
+		int lowerRowY = j + FLOW_BUTTON_STEP * 4 + 8;
+		this.buttonList.add(new GuiButton(0, this.width / 2 - 110, lowerRowY, 108, 20, I18n.format("menu.options")));
+		this.buttonList.add(new GuiButton(4, this.width / 2 + 2, lowerRowY, 108, 20, I18n.format("Edit Profile")));
+		this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 136, lowerRowY));
 	}
 
 	/**
@@ -195,23 +193,24 @@ public class GuiMainMenu extends GuiScreen {
 	 * bought the game.
 	 */
 	private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_) {
-		this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer")));
-		this.buttonList.add(
-				new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 1, I18n.format("menu.multiplayer")));
+		int x = this.width / 2 - FLOW_BUTTON_WIDTH / 2;
+		this.buttonList.add(new GuiButton(1, x, p_73969_1_, FLOW_BUTTON_WIDTH, 20, I18n.format("menu.singleplayer")));
 		this.buttonList
-				.add(new GuiButton(15, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, "FLOW Mods"));
+				.add(new GuiButton(2, x, p_73969_1_ + p_73969_2_ * 1, FLOW_BUTTON_WIDTH, 20, I18n.format("menu.multiplayer")));
+		this.buttonList.add(new GuiButton(15, x, p_73969_1_ + p_73969_2_ * 2, FLOW_BUTTON_WIDTH, 20, "FLOW Mods"));
 		this.buttonList
-				.add(new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 3, I18n.format("menu.credits")));
+				.add(new GuiButton(14, x, p_73969_1_ + p_73969_2_ * 3, FLOW_BUTTON_WIDTH, 20, I18n.format("menu.credits")));
 	}
 
 	/**
 	 * Adds Demo buttons on Main Menu for players who are playing Demo.
 	 */
 	private void addDemoButtons(int p_73972_1_, int p_73972_2_) {
-		this.buttonList.add(new GuiButton(11, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo")));
+		int x = this.width / 2 - FLOW_BUTTON_WIDTH / 2;
+		this.buttonList.add(new GuiButton(11, x, p_73972_1_, FLOW_BUTTON_WIDTH, 20, I18n.format("menu.playdemo")));
 		this.buttonResetDemo = this.addButton(
-				new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo")));
-		this.buttonList.add(new GuiButton(15, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 2, "FLOW Mods"));
+				new GuiButton(12, x, p_73972_1_ + p_73972_2_ * 1, FLOW_BUTTON_WIDTH, 20, I18n.format("menu.resetdemo")));
+		this.buttonList.add(new GuiButton(15, x, p_73972_1_ + p_73972_2_ * 2, FLOW_BUTTON_WIDTH, 20, "FLOW Mods"));
 		ISaveFormat isaveformat = this.mc.getSaveLoader();
 		WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
 
@@ -405,35 +404,30 @@ public class GuiMainMenu extends GuiScreen {
 	 * Renders the skybox in the main menu
 	 */
 	private void renderSkybox(int mouseX, int mouseY, float partialTicks) {
-		int flowShift = (int) (MathHelper.sin((this.panoramaTimer + partialTicks) * 0.03F) * 16.0F);
-		int topLeft = 0xFF041123 + (flowShift << 8);
-		int topRight = 0xFF0D2748 + (flowShift << 6);
-		int bottomLeft = 0xFF02162E + (flowShift << 4);
-		int bottomRight = 0xFF071D39 + (flowShift << 2);
+		int topLeft = 0xFF101A2A;
+		int topRight = 0xFF18253A;
+		int bottomLeft = 0xFF0C1421;
+		int bottomRight = 0xFF121D2E;
 		this.drawGradientRect(0, 0, this.width, this.height, topLeft, bottomLeft);
 		this.drawGradientRect(0, 0, this.width, this.height, topRight, bottomRight);
-		int mouseGlowX = mouseX - 90;
-		int mouseGlowY = mouseY - 90;
-		this.drawGradientRect(mouseGlowX, mouseGlowY, mouseGlowX + 180, mouseGlowY + 180, 0x205DAEFF, 0x00000000);
 	}
 
 	/**
 	 * Draws the screen and all the components in it.
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		this.panoramaTimer += partialTicks;
 		GlStateManager.disableAlpha();
 		this.renderSkybox(mouseX, mouseY, partialTicks);
 		GlStateManager.enableAlpha();
 		int i = 274;
 		int j = this.width / 2 - 137;
 		int k = 30;
-		this.drawGradientRect(0, 0, this.width, this.height, 0x7F020710, 0xA0000310);
+		this.drawGradientRect(0, 0, this.width, this.height, 0x4C0A1120, 0x6C040913);
 		int panelX = this.width / 2 - FLOW_PANEL_WIDTH / 2;
-		int panelY = this.height / 4 + 30;
-		int panelBottom = panelY + 194;
-		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x7A0D111B);
-		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x8B07162C);
+		int panelY = this.height / 4 + 26;
+		int panelBottom = panelY + 220;
+		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x660E1624);
+		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x730B1422);
 		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelY + 1, FLOW_ACCENT);
 		this.drawRect(panelX, panelBottom - 1, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x90000000);
 		this.drawRect(panelX, panelY, panelX + 1, panelBottom, 0x50000000);
@@ -443,14 +437,6 @@ public class GuiMainMenu extends GuiScreen {
 		this.drawCenteredString(this.fontRendererObj, "Modded 1.12.2", this.width / 2, panelY + 28, 0xFFCFE8FF);
 		this.drawCenteredString(this.fontRendererObj, "Dark Blue UI", this.width / 2, panelY + 41, 0xFF8BB2D8);
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translate((float) (this.width / 2), (float) (panelY + 56), 0.0F);
-		float f = 1.8F - MathHelper.abs(
-				MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * ((float) Math.PI * 2F)) * 0.1F);
-		f = f * 100.0F / (float) (this.fontRendererObj.getStringWidth(this.splashText) + 32);
-		GlStateManager.scale(f * 0.6F, f * 0.6F, f * 0.6F);
-		this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, 0xFFFFD75E);
-		GlStateManager.popMatrix();
 		String s = "Minecraft 1.12.2";
 
 		if (this.mc.isDemo()) {
