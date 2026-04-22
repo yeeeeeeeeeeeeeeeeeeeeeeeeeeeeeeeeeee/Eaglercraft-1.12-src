@@ -6,19 +6,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import net.lax1dude.eaglercraft.opengl.WorldRenderer;
 import net.lax1dude.eaglercraft.webview.GuiScreenServerInfo;
 import net.lax1dude.eaglercraft.EagRuntime;
 import net.lax1dude.eaglercraft.Keyboard;
 import net.lax1dude.eaglercraft.Mouse;
 import net.lax1dude.eaglercraft.PauseMenuCustomizeState;
 import net.lax1dude.eaglercraft.opengl.GlStateManager;
-import net.lax1dude.eaglercraft.opengl.RealOpenGLEnums;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -498,44 +494,14 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
 
 	public void drawWorldBackground(int tint) {
 		if (this.mc.world != null) {
-			boolean ingame = isPartOfPauseMenu();
-			ResourceLocation loc = (ingame && PauseMenuCustomizeState.icon_background_pause != null)
-					? PauseMenuCustomizeState.icon_background_pause
-					: PauseMenuCustomizeState.icon_background_all;
-			float aspect = (ingame && PauseMenuCustomizeState.icon_background_pause != null)
-					? 1.0f / PauseMenuCustomizeState.icon_background_pause_aspect
-					: 1.0f / PauseMenuCustomizeState.icon_background_all_aspect;
-			if (loc != null) {
-				GlStateManager.disableLighting();
-				GlStateManager.disableFog();
-				GlStateManager.enableBlend();
-				GlStateManager.disableAlpha();
-				GlStateManager.enableTexture2D();
-				GlStateManager.tryBlendFuncSeparate(RealOpenGLEnums.GL_SRC_ALPHA, RealOpenGLEnums.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-				Tessellator tessellator = Tessellator.getInstance();
-				WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-				this.mc.getTextureManager().bindTexture(loc);
-				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-				float f = 64.0F;
-				worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-				worldrenderer.pos(0.0D, (double) this.height, 0.0D).tex(0.0D, (double) ((float) this.height / f))
-						.color(64, 64, 64, 192).endVertex();
-				worldrenderer.pos((double) this.width, (double) this.height, 0.0D)
-						.tex((double) ((float) this.width / f * aspect), (double) ((float) this.height / f))
-						.color(64, 64, 64, 192).endVertex();
-				worldrenderer.pos((double) this.width, 0.0D, 0.0D)
-						.tex((double) ((float) this.width / f * aspect), (double) 0).color(64, 64, 64, 192).endVertex();
-				worldrenderer.pos(0.0D, 0.0D, 0.0D).tex(0.0D, (double) 0).color(64, 64, 64, 192).endVertex();
-				tessellator.draw();
-				GlStateManager.enableAlpha();
-			} else {
-				this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
-			}
+			this.drawGradientRect(0, 0, this.width, this.height, 0xD0051428, 0xD0010818);
+			this.drawGradientRect(0, 0, this.width, this.height, 0x400E3A66, 0x10000000);
 			if (!(this instanceof GuiScreenServerInfo)) {
-				loc = (ingame && PauseMenuCustomizeState.icon_watermark_pause != null)
+				boolean ingame = isPartOfPauseMenu();
+				ResourceLocation loc = (ingame && PauseMenuCustomizeState.icon_watermark_pause != null)
 						? PauseMenuCustomizeState.icon_watermark_pause
 						: PauseMenuCustomizeState.icon_watermark_all;
-				aspect = (ingame && PauseMenuCustomizeState.icon_watermark_pause != null)
+				float aspect = (ingame && PauseMenuCustomizeState.icon_watermark_pause != null)
 						? PauseMenuCustomizeState.icon_watermark_pause_aspect
 						: PauseMenuCustomizeState.icon_watermark_all_aspect;
 				if (loc != null) {
@@ -558,23 +524,8 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
 	 * Draws the background (i is always 0 as of 1.2.2)
 	 */
 	public void drawBackground(int tint) {
-		GlStateManager.disableLighting();
-		GlStateManager.disableFog();
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer bufferbuilder = tessellator.getBuffer();
-		this.mc.getTextureManager().bindTexture(OPTIONS_BACKGROUND);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		float f = 32.0F;
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-		bufferbuilder.pos(0.0D, (double) this.height, 0.0D)
-				.tex(0.0D, (double) ((float) this.height / 32.0F + (float) tint)).color(64, 64, 64, 255).endVertex();
-		bufferbuilder.pos((double) this.width, (double) this.height, 0.0D)
-				.tex((double) ((float) this.width / 32.0F), (double) ((float) this.height / 32.0F + (float) tint))
-				.color(64, 64, 64, 255).endVertex();
-		bufferbuilder.pos((double) this.width, 0.0D, 0.0D).tex((double) ((float) this.width / 32.0F), (double) tint)
-				.color(64, 64, 64, 255).endVertex();
-		bufferbuilder.pos(0.0D, 0.0D, 0.0D).tex(0.0D, (double) tint).color(64, 64, 64, 255).endVertex();
-		tessellator.draw();
+		this.drawGradientRect(0, 0, this.width, this.height, 0xFF041225, 0xFF020812);
+		this.drawGradientRect(0, 0, this.width, this.height, 0x3017639F, 0x08000000);
 	}
 
 	/**
