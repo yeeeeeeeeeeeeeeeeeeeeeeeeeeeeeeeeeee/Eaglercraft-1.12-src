@@ -155,6 +155,7 @@ public class GuiIngame extends Gui {
 	}
 
 	public void renderGameOverlay(float partialTicks) {
+		FlowModManager.tick(this.mc);
 		ScaledResolution scaledresolution = mc.scaledResolution;
 		int i = scaledresolution.getScaledWidth();
 		int j = scaledresolution.getScaledHeight();
@@ -238,6 +239,7 @@ public class GuiIngame extends Gui {
 		this.renderPotionEffects(scaledresolution);
 
 		this.overlayDebug.renderDebugInfo(scaledresolution);
+		FlowModManager.renderHud(this, scaledresolution);
 
 		if (this.recordPlayingUpFor > 0) {
 			float f2 = (float) this.recordPlayingUpFor - partialTicks;

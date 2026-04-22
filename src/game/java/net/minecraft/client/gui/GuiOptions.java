@@ -212,7 +212,12 @@ public class GuiOptions extends GuiScreen {
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
-		this.drawCenteredString(this.fontRendererObj, this.title, this.width / 2, 15, 16777215);
+		int panelLeft = this.width / 2 - 160;
+		int panelTop = 10;
+		int panelBottom = this.height - 26;
+		this.drawRect(panelLeft, panelTop, panelLeft + 320, panelBottom, 0x88071B34);
+		this.drawRect(panelLeft, panelTop, panelLeft + 320, panelTop + 1, 0xFF5DB8FF);
+		this.drawCenteredString(this.fontRendererObj, this.title, this.width / 2, 16, 0xFFCFE8FF);
 		
 		if (EagRuntime.getConfiguration().isEnableServerCookies() && mc.player == null) {
 			GlStateManager.pushMatrix();
@@ -228,7 +233,7 @@ public class GuiOptions extends GuiScreen {
 			}
 
 			drawString(mc.fontRendererObj, TextFormatting.UNDERLINE + text, (width - 1) * 4 / 3 - w - 5, 5,
-					hover ? 0xFFEEEE22 : 0xFFCCCCCC);
+					hover ? 0xFF8FD2FF : 0xFF87A7C8);
 
 			GlStateManager.popMatrix();
 		}

@@ -94,8 +94,13 @@ public class GuiScreenServerList extends GuiScreen {
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
-		this.drawCenteredString(this.fontRendererObj, I18n.format("selectServer.direct"), this.width / 2, 20, 16777215);
-		this.drawString(this.fontRendererObj, I18n.format("addServer.enterIp"), this.width / 2 - 100, 100, 10526880);
+		int panelLeft = this.width / 2 - 170;
+		int panelTop = 10;
+		int panelBottom = this.height - 26;
+		this.drawRect(panelLeft, panelTop, panelLeft + 340, panelBottom, 0x88071B34);
+		this.drawRect(panelLeft, panelTop, panelLeft + 340, panelTop + 1, 0xFF5DB8FF);
+		this.drawCenteredString(this.fontRendererObj, I18n.format("selectServer.direct"), this.width / 2, 20, 0xFFCFE8FF);
+		this.drawString(this.fontRendererObj, I18n.format("addServer.enterIp"), this.width / 2 - 100, 100, 0xFF9FC2E7);
 		this.ipEdit.drawTextBox();
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

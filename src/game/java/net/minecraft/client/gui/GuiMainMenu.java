@@ -15,7 +15,6 @@ import net.lax1dude.eaglercraft.EaglercraftRandom;
 import net.lax1dude.eaglercraft.EaglercraftVersion;
 import net.lax1dude.eaglercraft.IOUtils;
 import net.lax1dude.eaglercraft.internal.PlatformApplication;
-import net.lax1dude.eaglercraft.internal.PlatformOpenGL;
 import net.lax1dude.eaglercraft.minecraft.MainMenuSkyboxTexture;
 import net.lax1dude.eaglercraft.opengl.WorldRenderer;
 import net.lax1dude.eaglercraft.sp.SingleplayerServerController;
@@ -87,6 +86,8 @@ public class GuiMainMenu extends GuiScreen {
 
 	private int field_193978_M;
 	private int field_193979_N;
+	private static final int FLOW_PANEL_WIDTH = 238;
+	private static final int FLOW_ACCENT = 0xFF5DB8FF;
 
 	public GuiMainMenu() {
 		this.splashText = "missingno";
@@ -176,7 +177,7 @@ public class GuiMainMenu extends GuiScreen {
 		}
 
 		int i = 24;
-		int j = this.height / 4 + 48;
+		int j = this.height / 4 + 64;
 
 		if (this.mc.isDemo()) {
 			this.addDemoButtons(j, 24);
@@ -198,7 +199,9 @@ public class GuiMainMenu extends GuiScreen {
 		this.buttonList.add(
 				new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 1, I18n.format("menu.multiplayer")));
 		this.buttonList
-				.add(new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, I18n.format("menu.credits")));
+				.add(new GuiButton(15, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, "FLOW Mods"));
+		this.buttonList
+				.add(new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 3, I18n.format("menu.credits")));
 	}
 
 	/**
@@ -208,6 +211,7 @@ public class GuiMainMenu extends GuiScreen {
 		this.buttonList.add(new GuiButton(11, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo")));
 		this.buttonResetDemo = this.addButton(
 				new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo")));
+		this.buttonList.add(new GuiButton(15, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 2, "FLOW Mods"));
 		ISaveFormat isaveformat = this.mc.getSaveLoader();
 		WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
 
@@ -258,6 +262,10 @@ public class GuiMainMenu extends GuiScreen {
 
 		if (button.id == 14) {
 			this.mc.displayGuiScreen(new GuiCredits(this, "/assets/eagler/credits.txt"));
+		}
+
+		if (button.id == 15) {
+			this.mc.displayGuiScreen(new GuiScreenFlowClient(this));
 		}
 	}
 
@@ -397,53 +405,16 @@ public class GuiMainMenu extends GuiScreen {
 	 * Renders the skybox in the main menu
 	 */
 	private void renderSkybox(int mouseX, int mouseY, float partialTicks) {
-		viewportTexture.bindFramebuffer();
-		GlStateManager.viewport(0, 0, 256, 256);
-		GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		GlStateManager.clear(RealOpenGLEnums.GL_COLOR_BUFFER_BIT);
-		this.drawPanorama(mouseX, mouseY, partialTicks);
-		viewportTexture2.bindFramebuffer();
-		GlStateManager.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		GlStateManager.clear(RealOpenGLEnums.GL_COLOR_BUFFER_BIT);
-		this.mc.getTextureManager().bindTexture(backgroundTexture);
-		this.rotateAndBlurSkybox();
-		viewportTexture.bindFramebuffer();
-		this.mc.getTextureManager().bindTexture(backgroundTexture2);
-		this.rotateAndBlurSkybox();
-		viewportTexture2.bindFramebuffer();
-		this.mc.getTextureManager().bindTexture(backgroundTexture);
-		this.rotateAndBlurSkybox();
-		viewportTexture.bindFramebuffer();
-		this.mc.getTextureManager().bindTexture(backgroundTexture2);
-		this.rotateAndBlurSkybox();
-		viewportTexture2.bindFramebuffer();
-		this.mc.getTextureManager().bindTexture(backgroundTexture);
-		this.rotateAndBlurSkybox();
-		viewportTexture.bindFramebuffer();
-		this.mc.getTextureManager().bindTexture(backgroundTexture2);
-		this.rotateAndBlurSkybox();
-
-		PlatformOpenGL._wglBindFramebuffer(0x8D40, null);
-		this.mc.getTextureManager().bindTexture(backgroundTexture);
-		
-		GlStateManager.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
-		float f = 120.0F / (float) (this.width > this.height ? this.width : this.height);
-		float f1 = (float) this.height * f / 256.0F;
-		float f2 = (float) this.width * f / 256.0F;
-		int i = this.width;
-		int j = this.height;
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer bufferbuilder = tessellator.getBuffer();
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-		bufferbuilder.pos(0.0D, (double) j, (double) this.zLevel).tex((double) (0.5F - f1), (double) (0.5F + f2))
-				.color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-		bufferbuilder.pos((double) i, (double) j, (double) this.zLevel).tex((double) (0.5F - f1), (double) (0.5F - f2))
-				.color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-		bufferbuilder.pos((double) i, 0.0D, (double) this.zLevel).tex((double) (0.5F + f1), (double) (0.5F - f2))
-				.color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-		bufferbuilder.pos(0.0D, 0.0D, (double) this.zLevel).tex((double) (0.5F + f1), (double) (0.5F + f2))
-				.color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-		tessellator.draw();
+		int flowShift = (int) (MathHelper.sin((this.panoramaTimer + partialTicks) * 0.03F) * 16.0F);
+		int topLeft = 0xFF041123 + (flowShift << 8);
+		int topRight = 0xFF0D2748 + (flowShift << 6);
+		int bottomLeft = 0xFF02162E + (flowShift << 4);
+		int bottomRight = 0xFF071D39 + (flowShift << 2);
+		this.drawGradientRect(0, 0, this.width, this.height, topLeft, bottomLeft);
+		this.drawGradientRect(0, 0, this.width, this.height, topRight, bottomRight);
+		int mouseGlowX = mouseX - 90;
+		int mouseGlowY = mouseY - 90;
+		this.drawGradientRect(mouseGlowX, mouseGlowY, mouseGlowX + 180, mouseGlowY + 180, 0x205DAEFF, 0x00000000);
 	}
 
 	/**
@@ -457,34 +428,28 @@ public class GuiMainMenu extends GuiScreen {
 		int i = 274;
 		int j = this.width / 2 - 137;
 		int k = 30;
-		this.drawGradientRect(0, 0, this.width, this.height, -2130706433, 16777215);
-		this.drawGradientRect(0, 0, this.width, this.height, 0, Integer.MIN_VALUE);
-		this.mc.getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		this.drawGradientRect(0, 0, this.width, this.height, 0x7F020710, 0xA0000310);
+		int panelX = this.width / 2 - FLOW_PANEL_WIDTH / 2;
+		int panelY = this.height / 4 + 30;
+		int panelBottom = panelY + 194;
+		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x7A0D111B);
+		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x8B07162C);
+		this.drawRect(panelX, panelY, panelX + FLOW_PANEL_WIDTH, panelY + 1, FLOW_ACCENT);
+		this.drawRect(panelX, panelBottom - 1, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x90000000);
+		this.drawRect(panelX, panelY, panelX + 1, panelBottom, 0x50000000);
+		this.drawRect(panelX + FLOW_PANEL_WIDTH - 1, panelY, panelX + FLOW_PANEL_WIDTH, panelBottom, 0x50000000);
 
-		if ((double) this.updateCounter < 1.0E-4D) {
-			this.drawTexturedModalRect(j + 0, 30, 0, 0, 99, 44);
-			this.drawTexturedModalRect(j + 99, 30, 129, 0, 27, 44);
-			this.drawTexturedModalRect(j + 99 + 26, 30, 126, 0, 3, 44);
-			this.drawTexturedModalRect(j + 99 + 26 + 3, 30, 99, 0, 26, 44);
-			this.drawTexturedModalRect(j + 155, 30, 0, 45, 155, 44);
-		} else {
-			this.drawTexturedModalRect(j + 0, 30, 0, 0, 155, 44);
-			this.drawTexturedModalRect(j + 155, 30, 0, 45, 155, 44);
-		}
-
-		this.mc.getTextureManager().bindTexture(field_194400_H);
-
-		drawModalRectWithCustomSizedTexture(j + 88, 67, 0.0F, 0.0F, 98, 14, 128.0F, 16.0F);
+		this.drawCenteredString(this.fontRendererObj, "FLOW CLIENT", this.width / 2, panelY + 14, FLOW_ACCENT);
+		this.drawCenteredString(this.fontRendererObj, "Modded 1.12.2", this.width / 2, panelY + 28, 0xFFCFE8FF);
+		this.drawCenteredString(this.fontRendererObj, "Dark Blue UI", this.width / 2, panelY + 41, 0xFF8BB2D8);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float) (this.width / 2 + 90), 70.0F, 0.0F);
-		GlStateManager.rotate(-20.0F, 0.0F, 0.0F, 1.0F);
+		GlStateManager.translate((float) (this.width / 2), (float) (panelY + 56), 0.0F);
 		float f = 1.8F - MathHelper.abs(
 				MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * ((float) Math.PI * 2F)) * 0.1F);
 		f = f * 100.0F / (float) (this.fontRendererObj.getStringWidth(this.splashText) + 32);
-		GlStateManager.scale(f, f, f);
-		this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
+		GlStateManager.scale(f * 0.6F, f * 0.6F, f * 0.6F);
+		this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, 0xFFFFD75E);
 		GlStateManager.popMatrix();
 		String s = "Minecraft 1.12.2";
 
@@ -492,11 +457,11 @@ public class GuiMainMenu extends GuiScreen {
 			s = s + " Demo";
 		}
 
-		this.drawString(this.fontRendererObj, s, 2, this.height - 20, -1);
+		this.drawString(this.fontRendererObj, s, 2, this.height - 20, 0xFFCFE8FF);
 		this.drawString(this.fontRendererObj, "Eaglercraft 1.12.2 (" + EaglercraftVersion.projectOriginVersion + ")", 2,
-				this.height - 10, -1);
+				this.height - 10, 0xFF93BCE6);
 		this.drawString(this.fontRendererObj, "Resources copyright Mojang AB", this.field_193979_N, this.height - 10,
-				-1);
+				0xFF93BCE6);
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

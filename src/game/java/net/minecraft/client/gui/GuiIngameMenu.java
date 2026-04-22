@@ -189,9 +189,14 @@ public class GuiIngameMenu extends GuiScreen {
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
+		int panelLeft = this.width / 2 - 112;
+		int panelTop = 26;
+		int panelBottom = this.height - 24;
+		this.drawRect(panelLeft, panelTop, panelLeft + 224, panelBottom, 0x88071B34);
+		this.drawRect(panelLeft, panelTop, panelLeft + 224, panelTop + 1, 0xFF5DB8FF);
 		String titleStr = I18n.format("menu.game", new Object[0]);
 		int titleStrWidth = fontRendererObj.getStringWidth(titleStr);
-		this.drawString(this.fontRendererObj, titleStr, (this.width - titleStrWidth) / 2, 40, 16777215);
+		this.drawString(this.fontRendererObj, titleStr, (this.width - titleStrWidth) / 2, 40, 0xFFCFE8FF);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		if (PauseMenuCustomizeState.icon_title_L != null) {
 			mc.getTextureManager().bindTexture(PauseMenuCustomizeState.icon_title_L);

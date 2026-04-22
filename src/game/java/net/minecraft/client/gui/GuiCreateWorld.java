@@ -425,22 +425,27 @@ public class GuiCreateWorld extends GuiScreen {
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
-		this.drawCenteredString(this.fontRendererObj, I18n.format("selectWorld.create"), this.width / 2, 20, -1);
+		int panelLeft = this.width / 2 - 170;
+		int panelTop = 10;
+		int panelBottom = this.height - 26;
+		this.drawRect(panelLeft, panelTop, panelLeft + 340, panelBottom, 0x88071B34);
+		this.drawRect(panelLeft, panelTop, panelLeft + 340, panelTop + 1, 0xFF5DB8FF);
+		this.drawCenteredString(this.fontRendererObj, I18n.format("selectWorld.create"), this.width / 2, 20, 0xFFCFE8FF);
 
 		if (this.inMoreWorldOptionsDisplay) {
 			this.drawString(this.fontRendererObj, I18n.format("selectWorld.enterSeed"), this.width / 2 - 100, 47,
-					-6250336);
+					0xFF9FC2E7);
 			this.drawString(this.fontRendererObj, I18n.format("selectWorld.seedInfo"), this.width / 2 - 100, 85,
-					-6250336);
+					0xFF87A7C8);
 
 			if (this.btnMapFeatures.visible) {
 				this.drawString(this.fontRendererObj, I18n.format("selectWorld.mapFeatures.info"), this.width / 2 - 150,
-						122, -6250336);
+						122, 0xFF87A7C8);
 			}
 
 			if (this.btnAllowCommands.visible) {
 				this.drawString(this.fontRendererObj, I18n.format("selectWorld.allowCommands.info"),
-						this.width / 2 - 150, 172, -6250336);
+						this.width / 2 - 150, 172, 0xFF87A7C8);
 			}
 
 			this.worldSeedField.drawTextBox();
@@ -453,12 +458,12 @@ public class GuiCreateWorld extends GuiScreen {
 			}
 		} else {
 			this.drawString(this.fontRendererObj, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 47,
-					-6250336);
+					0xFF9FC2E7);
 			this.drawString(this.fontRendererObj, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName,
-					this.width / 2 - 100, 85, -6250336);
+					this.width / 2 - 100, 85, 0xFF87A7C8);
 			this.worldNameField.drawTextBox();
-			this.drawString(this.fontRendererObj, this.gameModeDesc1, this.width / 2 - 100, 137, -6250336);
-			this.drawString(this.fontRendererObj, this.gameModeDesc2, this.width / 2 - 100, 149, -6250336);
+			this.drawString(this.fontRendererObj, this.gameModeDesc1, this.width / 2 - 100, 137, 0xFF87A7C8);
+			this.drawString(this.fontRendererObj, this.gameModeDesc2, this.width / 2 - 100, 149, 0xFF87A7C8);
 		}
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
