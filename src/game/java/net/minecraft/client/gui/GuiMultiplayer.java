@@ -275,8 +275,13 @@ public class GuiMultiplayer extends GuiScreen {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.hoveringText = null;
 		this.drawDefaultBackground();
+		int panelLeft = this.width / 2 - 220;
+		int panelTop = 10;
+		int panelBottom = this.height - 26;
+		this.drawRect(panelLeft, panelTop, panelLeft + 440, panelBottom, 0x88071B34);
+		this.drawRect(panelLeft, panelTop, panelLeft + 440, panelTop + 1, 0xFF5DB8FF);
 		this.serverListSelector.drawScreen(mouseX, mouseY, partialTicks);
-		this.drawCenteredString(this.fontRendererObj, I18n.format("multiplayer.title"), this.width / 2, 20, 16777215);
+		this.drawCenteredString(this.fontRendererObj, I18n.format("multiplayer.title"), this.width / 2, 20, 0xFFCFE8FF);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 
 		if (this.hoveringText != null) {

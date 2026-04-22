@@ -70,8 +70,6 @@ public class GuiButton extends Gui {
 	public void func_191745_a(Minecraft p_191745_1_, int p_191745_2_, int p_191745_3_, float p_191745_4_) {
 		if (this.visible) {
 			FontRenderer fontrenderer = p_191745_1_.fontRendererObj;
-			p_191745_1_.getTextureManager().bindTexture(BUTTON_TEXTURES);
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = p_191745_2_ >= this.xPosition && p_191745_3_ >= this.yPosition
 					&& p_191745_2_ < this.xPosition + this.width && p_191745_3_ < this.yPosition + this.height;
 			int i = this.getHoverState(this.hovered);
@@ -79,16 +77,28 @@ public class GuiButton extends Gui {
 			GlStateManager.tryBlendFuncSeparate(RealOpenGLEnums.GL_SRC_ALPHA, RealOpenGLEnums.GL_ONE_MINUS_SRC_ALPHA,
 					RealOpenGLEnums.GL_ONE, RealOpenGLEnums.GL_ZERO);
 			GlStateManager.blendFunc(RealOpenGLEnums.GL_SRC_ALPHA, RealOpenGLEnums.GL_ONE_MINUS_SRC_ALPHA);
-			this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + i * 20, this.width / 2, this.height);
-			this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2,
-					46 + i * 20, this.width / 2, this.height);
-			this.mouseDragged(p_191745_1_, p_191745_2_, p_191745_3_);
-			int j = 14737632;
+			int buttonColor = 0xAA12345A;
+			int borderColor = 0xFF3C6FA5;
 
 			if (!this.enabled) {
-				j = 10526880;
+				buttonColor = 0xAA102031;
+				borderColor = 0xFF2A415C;
+			} else if (i == 2) {
+				buttonColor = 0xCC1A4676;
+				borderColor = 0xFF6DBAFF;
+			}
+
+			this.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, buttonColor);
+			this.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + 1, borderColor);
+			this.drawRect(this.xPosition, this.yPosition + this.height - 1, this.xPosition + this.width,
+					this.yPosition + this.height, 0x70000000);
+			this.mouseDragged(p_191745_1_, p_191745_2_, p_191745_3_);
+			int j = 0xFFCFE7FF;
+
+			if (!this.enabled) {
+				j = 0xFF7192B4;
 			} else if (this.hovered) {
-				j = 16777120;
+				j = 0xFFFFFFFF;
 			}
 
 			this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2,
